@@ -1,0 +1,25 @@
+import numpy as np
+from scipy import stats
+
+mean = 4
+std = 1
+size = (100, 100)
+samples = np.random.normal(mean, std, size)
+
+s_mean = np.mean(samples, axis=1)
+s_std = np.std(samples, axis=1, ddof=1)
+
+n = samples.shape[1]
+df = n - 1
+t = stats.t.ppf(0.975,df)
+s_error = s_std / np.sqrt(n)
+m_error = t * s_error
+c_l = s_mean - m_error
+c_h = s_mean + m_error
+
+
+# 모평균 포함 여부
+contains_true_mean = (c_l <= 4) & (c_h >= 4)
+num_contains = np.sum(contains_true_mean)
+print(f"모평균 포함 표본 수: {num_contains} (포함률: {num_contains/100:.2%})")
+
